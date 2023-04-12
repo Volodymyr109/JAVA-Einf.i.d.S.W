@@ -1,15 +1,19 @@
 public class Main {
     public static void main(String[] args) {
 
-        System.out.println(fib(8));
-    }
+        int f1 = 1;
+        int f2 = 1;
+        int f3; //sum f1 und f2
+        System.out.println("| " + f1 + " |  f(n): " + f2 +  "                          |");
+        System.out.print("+---+-----------------------------------+" + "\n");
 
-    public static int fib(int n) {
+        for (int i = 2; i <= 10; i++) {
 
-        if (n == 1 || n ==0)
-            return n;
+            f3 = f1 + f2;
+            System.out.print("| " + f3 + " ");
+            f1 = f2;
+            f2 = f3;
 
-        // rec. step
-        return fib(n - 1) + fib(n - 2);
+        }
     }
 }
