@@ -2,27 +2,37 @@ import java.util.Scanner;
 
 public class Main1 {
     public static void main(String[] args) {
+
+        // Scanner importiert (der users input nimmt)
         Scanner input = new Scanner(System.in);
         System.out.print("Bitte geben Sie eine positive Zahl ein: ");
+        // user input input.nextLine im terminal + funktion, die nimmt input als parseInt
         String userInput = input.nextLine();
         if (check(userInput)) {
             int x = Integer.parseInt(userInput);
         }
-        System.out.println("MOIN DIE WELT! ");
+
     }
 
+    // nehme user input und check ob x <= 0
     public static boolean check(String input) {
+        // try user input und check ob x <= 0
         try {
             int x = Integer.parseInt(input);
             if (x <= 0) {
-                System.out.println("(err1) Geben Sie positive Zahl! ");
+                System.out.println("(err1 in try) Geben Sie positive Zahl! ");
                 return false;
             }
+        // Das Auslösen einer Ausnahme unterbricht die Ausführung der Methode. Das wird aus der Methode parseInt users input geworfen
         } catch (NumberFormatException e) {
-            System.out.println("(err2) Geben Sie positive Zahl!");
+            System.out.println("(err in catch) Geben Sie positive Zahl!");
             return false;
         }
+        // if x >= 0 dann true
+        System.out.println("MOIN DIE WELT! ");
         return true;
+
     }
-    
+
 }
+
