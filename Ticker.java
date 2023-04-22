@@ -1,25 +1,19 @@
-package ticker;
 public class Ticker {
+    // deklarieren instance der Klasse
+    private static Ticker instance = null;
+    // konstruktor
+    private Ticker() {}
 
-    private static Ticker ticker;
-
-    private static final String LINE_SEP = System.lineSeparator();
-
-    public static final String MESSAGE_SEP = "+++";
-
-    private Ticker() {
-
-    }
-
-    public static Ticker getInstance(){
-        if (ticker == null) {
-            ticker = new Ticker();
+    public static Ticker getInstance() {
+        if (instance == null) {
+            instance = new Ticker();
         }
-        return ticker;
+        return instance;
     }
 
+    // pattern des outputs (laut aufgabe)
     public void print(String text) {
-        text = text.replace(LINE_SEP, " ");
-        System.out.println(MESSAGE_SEP + text);
+        text = text.replace("\n", "");
+        System.out.print("+++" + text + "+++" + "\n");
     }
 }
