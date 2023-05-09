@@ -1,74 +1,109 @@
+package Fraction;
+
 public class Fraction {
-    private int numerator;
-    private int denominator;
 
-    // wird aufgerufen, wenn ein neues Objekt dieser Klasse erzeugt wird
-    public Fraction(int numerator, int denominator) {
-        if (denominator == 0) {
-            throw new IllegalArgumentException("Denominator muss > 0 sein");
-        }
-        // wird der größte gemeinsame Teiler (ggT) des Zählers (numerator) und des Nenners berechnet
-        int ggt = ggt(Math.abs(numerator), Math.abs(denominator));
-        this.numerator = numerator / ggt;
-        this.denominator = denominator / ggt;
-        if (this.denominator < 0) {
-            this.numerator = -this.numerator;
-            this.denominator = -this.denominator;
-        }
-    }
-    //Fractions Addiert/Subtrahiert/Multipliziert/Dividiert den aktuellen Bruch mit dem als Argument übergebenen Bruch
-    public Fraction add(Fraction other) {
-        int newNumerator = this.numerator * other.denominator + other.numerator * this.denominator;
-        int newDenominator = this.denominator * other.denominator;
-        return new Fraction(newNumerator, newDenominator);
-    }
+    //Größten gemeinsamen Teiler um den Bruch vor der Kürzung zu reduzieren
+    //recursion um ggt* zu berechnen, inkl. prüf ob der teiler gleich null ist
+   public static int gcd(int a, int b) {
+      return b == 0 ? a : gcd(b, a % b);
+   }
 
+   private final int numerator;
+   private final int denominator;
+
+   //Creates a Fraction object with numerator and denominator 1, reduces the fraction with creation.
+   public Fraction(int numerator) {
+      this(numerator, 1);
+   }
+
+   // Obj der Klasse, das  int numerator, int denominator nimmt und = oder !=0 prueft
+   public Fraction(int numerator, int denominator) {
+      if (denominator == 0) {
+          System.out.println("denominator == 0 is not possible");
+          System.out.println("Terminating program");
+          System.exit(-1);
+      }
+
+      // Gr. gemeis teiler (creates greatest common divisior).
+      int gcd = Fraction.gcd(numerator, denominator);
+      
+      /*
+       * check sign, make denominator positive --> the sign of the fraction
+       * is always stored only in the numerator. 
+       */
+      if (denominator / gcd < 0) {
+          gcd *= -1;
+      }
+
+      this.numerator = numerator / gcd;
+      this.denominator = denominator / gcd;
+   }
+
+    // add fractions mit other, numerator und denominator
+   public Fraction add(Fraction other) {
+       int newNumerator = this.numerator * other.denominator + other.numerator * this.denominator;
+       int newDenominator = this.denominator * other.denominator;
+       return new Fraction(newNumerator, newDenominator);
+   }
+
+    // sub fractions mit other, numerator und denominator
     public Fraction subtract(Fraction other) {
-        int newNumerator = this.numerator * other.denominator - other.numerator * this.denominator;
-        int newDenominator = this.denominator * other.denominator;
-        return new Fraction(newNumerator, newDenominator);
-    }
+       int newNumerator = this.numerator * other.denominator - other.numerator * this.denominator;
+       int newDenominator = this.denominator * other.denominator;
+       return new Fraction(newNumerator, newDenominator);
+   }
 
-    public Fraction multiply(Fraction other) {
-        int newNumerator = this.numerator * other.numerator;
-        int newDenominator = this.denominator * other.denominator;
-        return new Fraction(newNumerator, newDenominator);
-    }
+    // div fractions mit other, numerator und denominator
+   public Fraction divide(Fraction other) {
+       int newNumerator = this.numerator * other.denominator;
+       int newDenominator = this.denominator * other.numerator;
+       return new Fraction(newNumerator, newDenominator);
+   }
 
-    public Fraction divide(Fraction other) {
-        int newNumerator = this.numerator * other.denominator;
-        int newDenominator = this.denominator * other.numerator;
-        return new Fraction(newNumerator, newDenominator);
-    }
-    /*
-    parseFraction macht Darstellung des Bruchs als zahl1/zahl2
-     */
-    public static Fraction parseFraction(String s) { // nimmt s string als Bruch darstellung
-        String[] parts = s.split("/"); // s wäre mit trennzeichen aufgeteilt
-        if (parts.length == 1) { // geteilt der Input
-            return new Fraction(Integer.parseInt(parts[0]), 1);
-        } else if (parts.length == 2) { // Wenn die zusammen eine Zahl vorhanden, wird es als integer erstellt z.b. 2/2
-            int numerator = Integer.parseInt(parts[0]);
-            int denominator = Integer.parseInt(parts[1]);
-            return new Fraction(numerator, denominator);
-        } else {
-            throw new IllegalArgumentException("Invalid fraction format: " + s);
-        }
-    }
-    /*
-     Größten gemeinsamen Teiler um den Bruch vor der Kürzung zu reduzieren
-     recursion um ggt* zu berechnen, inkl. prüf ob der teiler gleich null ist
-     */
-    private static int ggt(int a, int b) {
-        if (b == 0) {
-            return a;
-        } else {
-            return ggt(b, a % b);
-        }
-    }
-    //man deklariert "/" als default symbol zwischen numerator und denominator
-    @Override
-    public String toString() {
-        return numerator + "/" + denominator; //man deklariert "/" als default symbol zwischen numerator und denominator
-    }
+   public int getDenominator() {
+      return this.denominator;
+   }
+
+   public int getNumerator() {
+      return this.numerator;
+   }
+
+    //Multiplies this Fraction with another Fraction mit factor
+   public Fraction multiply(Fraction factor) {
+      return new Fraction(this.numerator * factor.numerator, this.denominator
+            * factor.denominator);
+   }
+
+   public Fraction multiply(Fraction... factors) {
+      Fraction result = this;
+      //variable parameters may be treated like an array inside the method
+      for (int i = 0; i < factors.length; i++) {
+         result = result.multiply(factors[i]);
+      }
+      return result;
+   }
+
+   // Multiplies this Fraction with int n.  n factor to multiply with return The product as a new Fraction
+   public Fraction multiply(int n) {
+      return new Fraction(this.numerator * n, this.denominator);
+   }
+
+    //parseFraction macht Darstellung des Bruchs als zahl1/zahl2 und Prueft format x/y
+   public static Fraction parseFraction(String s) { 
+	   // nimmt s string als Bruch darstellung
+       String[] parts = s.split("/"); // s wäre mit trennzeichen aufgeteilt // REGEX WIE INPUT USERS SEIEN SOLL
+       if (parts.length == 1) { // geteilt der Input
+           return new Fraction(Integer.parseInt(parts[0]), 1);
+       } else if (parts.length == 2) { // Wenn die zusammen eine Zahl vorhanden, wird es als integer erstellt z.b. 2/2
+           int numerator = Integer.parseInt(parts[0]);
+           int denominator = Integer.parseInt(parts[1]);
+           return new Fraction(numerator, denominator);
+       } else {
+           throw new IllegalArgumentException("Invalid fraction format: " + s);
+       }
+   }
+   //man deklariert "/" als default symbol zwischen numerator und denominator
+   public String toString() {
+      return numerator + "/" + denominator;
+   }
 }
