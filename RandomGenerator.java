@@ -1,56 +1,38 @@
 package threads;
-/* AUFGABE
-1. Verändern Sie nur die Klassen threads.RandomGenerator und threads.Sleeper
-und beheben Sie die Probleme durch die Synchronisation über ein geeignetes Monitor-Objekt
- */
 /**
-6 * A simple {@code Thread} which continuously writes uniformly distribute random
-7 * values from 0 to {@code MAX_VALUE} to the given {@code Queue}. Will sleep
-8 * {@code SLEEP_TIME} after every insertion.
-9 *
-10 * @author Mathias Menninghaus (mathias.menninghaus@uos.de)
- /////
- Verändern Sie nur die Klassen threads.RandomGenerator und threads.Sleeper
- und beheben Sie die Probleme durch die Synchronisation über ein geeignetes Monitor-Objekt.
- /////
-11 */
-//Diese Klasse generiert zufällige Long-Werte und fügt sie einer Warteschlange hinzu, um von einem anderen Thread verwendet zu werden.
+ * Einfacher {@code Thread}, der kontinuierlich gleichmäßig verteilte zufällige
+ * Werte von 0 bis {@code MAX_VALUE} in die gegebene {@code Queue} schreibt.
+ * Nach jeder Einfügung wird für {@code SLEEP_TIME} geschlafen.
+ */
 public class RandomGenerator extends Thread {
 
-	//wird verwendet, um die Warteschlange der generierten Zufallswerte zu speichern.
-	private Queue<Long> randoms;
+	private Queue<Long> randoms; // Die Warteschlange, in die die generierten Zufallswerte eingefügt werden
 	public static final long MAX_VALUE = 3000;
 	public static final long SLEEP_TIME = 1000;
-	//nimmt eine Warteschlange von Long-Werten entgegen und weist sie dem Datenfeld "randoms" zu.
+
+	//Konstruktor, der eine Warteschlange von Long-Werten entgegennimmt und sie dem Datenfeld "randoms" zuweist.
 	public RandomGenerator(Queue<Long> randoms) {
 		this.randoms = randoms;
 	}
-	//ausgeführt, wenn der Thread gestartet wird.
+
+	//Die Methode "run()" wird ausgeführt, wenn der Thread gestartet wird.
 	public void run() {
 		try {
-
-			while (true) { //die solange ausgeführt wird, bis der Thread unterbrochen wird.
-
+			while (true) { // Die Schleife wird solange ausgeführt, bis der Thread unterbrochen wird.
 				long random;
-				synchronized (randoms) {
-					while (this.randoms.full()) {
-						randoms.wait();
+				synchronized (randoms) { // Ein Synchronisationsblock wird verwendet, um auf das Datenfeld "randoms" zuzugreifen.
+					while (this.randoms.full()) { // Überprüft, ob die Warteschlange "randoms" voll ist.
+						randoms.wait(); // Wenn die Warteschlange voll ist, ruft der Thread die Methode "wait()" auf und wartet darauf, dass Elemente entfernt werden.
 					}
-					/*
-					Sobald Platz in der Warteschlange vorhanden ist,
-					wird mit der Methode "Math.random()" ein zufälliger Wert zwischen 0 und "MAX_VALUE"
-					generiert und der Variablen "random" zugewiesen.
-					 */
-					random = (long) (Math.random() * (double) MAX_VALUE);
-					System.out.println("Now putting " + random); //ausgegeben, um anzuzeigen, dass der generierte Wert in die Warteschlange eingefügt wird.
-					randoms.enq(random);
-					randoms.notifyAll();
+					random = (long) (Math.random() * (double) MAX_VALUE); // Generiert einen zufälligen Wert zwischen 0 und "MAX_VALUE".
+					System.out.println("Now putting " + random); // Gibt aus, dass der generierte Wert in die Warteschlange eingefügt wird.
+					randoms.enq(random); // Fügt den generierten Wert in die Warteschlange ein.
+					randoms.notifyAll(); // Benachrichtigt andere Threads, dass neue Werte in die Warteschlange eingefügt wurden.
 				}
+				this.sleep(SLEEP_TIME); // Der Thread schläft für die angegebene Zeit.
 			}
-
-		} catch (InterruptedException ex) {
+		} catch (InterruptedException ex) { // Falls der Thread während des Wartens unterbrochen wird (InterruptedException), wird eine Fehlermeldung ausgegeben.
 			ex.printStackTrace();
 		}
 	}
 }
-

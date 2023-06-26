@@ -8,7 +8,7 @@ package threads;
  */
 public class MakeRandomSleeps {
 
-	//Konstante "MAX_VALUES", die angibt, wie viele Werte die Warteschlange maximal speichern kann.
+	//Konstante "MAX_VALUES", die angibt, wie viele Werte die Warteschlange queue maximal speichern kann.
 	public static final int MAX_VALUES = 4;
 
 	public static void main(String[] args) {
@@ -26,7 +26,6 @@ public class MakeRandomSleeps {
 		 */
 		a.start();
 		b.start();
-
 		/*
 		startet zwei Threads: einen "RandomGenerator"-Thread und einen "Sleeper"-Thread.
 		Der "RandomGenerator"-Thread generiert Zufallswerte und fügt sie in die Warteschlange ein,

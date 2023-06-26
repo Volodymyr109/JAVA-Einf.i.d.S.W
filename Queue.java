@@ -33,6 +33,7 @@ public class Queue<E> {
 		//hinzuzufügen
 		//verwendet, um ein Element am Ende der Warteschlange hinzuzufügen
 		public void enq(E o) throws InterruptedException {
+		// lock sperrt es, um sicherzustellen, dass kein anderer Thread zur gleichen Zeit auf die Warteschlange zugreift oder sie modifiziert
 		this.writeLock.lock();
 		try {
 
@@ -50,6 +51,7 @@ public class Queue<E> {
 		//entfernen
 		//wird verwendet, um das erste Element aus der Warteschlange zu entfernen
 		public E deq() throws InterruptedException {
+		// lock sperrt es, um sicherzustellen, dass kein anderer Thread zur gleichen Zeit auf die Warteschlange zugreift oder sie modifiziert
 		this.writeLock.lock(); // lock in work
 		try {
 			while (this.empty()) { //Wenn die Warteschlange leer ist, wartet der aufrufende Thread mit der Methode "await()"
@@ -68,6 +70,7 @@ public class Queue<E> {
 		}
 		//gibt das erste Element in der Warteschlange zurück ohne es zu entfernen
 		public E front(E o) {
+		// lock sperrt es, um sicherzustellen, dass kein anderer Thread zur gleichen Zeit auf die Warteschlange zugreift oder sie modifiziert
 		this.readLock.lock(); // lock in work
 		try {
 			if (this.empty()) { //Wenn die Warteschlange leer ist, wird eine "NoSuchElementException" ausgelöst.
@@ -80,6 +83,7 @@ public class Queue<E> {
 		}
 		//überprüft, ob die Warteschlange leer ist,
 		public boolean empty() {
+		// lock sperrt es, um sicherzustellen, dass kein anderer Thread zur gleichen Zeit auf die Warteschlange zugreift oder sie modifiziert
 		this.readLock.lock();// lock in work
 		try {
 			return this.size == 0;
@@ -89,6 +93,7 @@ public class Queue<E> {
 		}
 		//überprüft, ob die Warteschlange voll ist
 		public boolean full() {
+		// lock sperrt es, um sicherzustellen, dass kein anderer Thread zur gleichen Zeit auf die Warteschlange zugreift oder sie modifiziert
 		this.readLock.lock();// lock in work
 		try {
 			return this.size == objects.length;

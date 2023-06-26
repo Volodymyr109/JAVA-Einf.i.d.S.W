@@ -1,45 +1,33 @@
 package threads;
-/* AUFGABE
-=
-1. Verändern Sie nur die Klassen threads.RandomGenerator und threads.Sleeper
-und beheben Sie die Probleme durch die Synchronisation über ein geeignetes Monitor-Objekt
- */
 /**
- * 6 * Simple {@code Thread} which continuously reads random values from the given
- 7 * {@code Queue} and sleeps for as long as the currently read value determines.
- 8 *
- 9 * @author Mathias Menninghaus (mathias.menninghaus@uos.de)
- 10 *
- 11 */
-//Zweck dieser Klasse besteht darin, eine Liste von Werten (Long-Werten) zu überwachen und für jeden Wert eine bestimmte Zeit zu warten.
+ * Einfacher {@code Thread}, der kontinuierlich zufällige Werte aus der gegebenen
+ * {@code Queue} liest und entsprechend lange schläft.
+ */
 public class Sleeper extends Thread {
-   //Datenfeld wird verwendet, um die Warteschlange der Werte zu speichern, die von der Klasse überwacht werden sollen.
-   private Queue<Long> values;
 
-   //nimmt eine Warteschlange von Long-Werten entgegen und weist sie dem Datenfeld "values" zu.
+   private Queue<Long> values; // Die Warteschlange, die die zu überwachenden Werte enthält
+
+   //Konstruktor, der eine Warteschlange von Long-Werten entgegennimmt und sie dem Datenfeld "values" zuweist.
    public Sleeper(Queue<Long> values) {
       this.values = values;
-      }
-      //Die Methode "run()" wird ausgeführt, wenn der Thread gestartet wird.
-      public void run() {
-         try {
-            while (true) { //die solange ausgeführt wird, bis der Thread unterbrochen wird.
-               long value;
-               synchronized (values) { // wird ein Synchronisationsblock verwendet, um auf das Datenfeld "values" zuzugreifen.
-                  while (this.values.empty()) { //überprüft, ob die Warteschlange "values" leer ist. Wenn sie leer ist, ruft der Thread die Methode "wait()" auf, Warteschlange zu warten.
-                     values.wait();
+   }
 
-                     }
-                  value = values.deq(); //Methode "deq()" aus der Warteschlange entfernt und der Variablen "value" zugewiesen.
-                  values.notifyAll();   //aufgerufen, um andere Threads zu benachrichtigen
-                  System.out.println("Now sleeping for " + value + " ms"); // ausgegeben, um anzuzeigen, dass der Thread für den bestimmten Zeitraum schläft.
+   //Die Methode "run()" wird ausgeführt, wenn der Thread gestartet wird.
+   public void run() {
+      try {
+         while (true) { // Die Schleife wird solange ausgeführt, bis der Thread unterbrochen wird.
+            long value;
+            synchronized (values) { // Ein Synchronisationsblock wird verwendet, um auf das Datenfeld "values" zuzugreifen.
+               while (this.values.empty()) { // Überprüft, ob die Warteschlange "values" leer ist.
+                  values.wait(); // Wenn die Warteschlange leer ist, ruft der Thread die Methode "wait()" auf und wartet darauf, dass Elemente hinzugefügt werden.
                }
-            this.sleep(value);
-
+               value = values.deq(); // Entfernt das nächste Element aus der Warteschlange und weist es der Variablen "value" zu.
+               values.notifyAll(); // Benachrichtigt andere Threads, dass Elemente aus der Warteschlange entfernt wurden.
+               System.out.println("Now sleeping for " + value + " ms"); // Gibt aus, dass der Thread für die bestimmte Zeit schläft.
             }
+            this.sleep(value); // Der Thread schläft für den angegebenen Zeitraum.
          }
-         //Falls der Thread während des Schlafens unterbrochen wird (InterruptedException), wird eine Fehlermeldung ausgegeben.
-         catch (InterruptedException e) {
+      } catch (InterruptedException e) { // Falls der Thread während des Schlafens unterbrochen wird (InterruptedException), wird eine Fehlermeldung ausgegeben.
          e.printStackTrace();
       }
    }
